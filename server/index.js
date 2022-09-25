@@ -41,5 +41,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 app.use('/users', require('./routes/userRoute'));
+app.use('/posts', require('./routes/postRoute')); // bug
 
 app.listen(port, () => console.log(`Server started on port ${port}`.black.bgCyan.italic));
