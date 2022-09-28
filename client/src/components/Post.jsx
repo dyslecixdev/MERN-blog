@@ -10,7 +10,8 @@ import {
 	Typography,
 	CardActions,
 	Checkbox,
-	Tooltip
+	Tooltip,
+	Button
 } from '@mui/material';
 import {Favorite, FavoriteBorder} from '@mui/icons-material';
 
@@ -82,16 +83,28 @@ function Post({postData}) {
 			</CardContent>
 
 			{/* Like button and Read more link */}
-			<CardActions>
+			<CardActions
+				sx={{
+					paddingRight: '2rem',
+					display: 'flex',
+					justifyContent: 'space-between'
+				}}
+			>
 				<IconButton>
 					<Checkbox
 						icon={<FavoriteBorder />} // todo Ability to increment and decrement likeCount
 						checkedIcon={<Favorite sx={{color: 'red'}} />}
 					/>
 				</IconButton>
-				<Link to={`/post/${postData._id}`} style={{color: 'blue', textDecoration: 'none'}}>
-					Read more
-				</Link>
+				<Typography variant='body2'>{postData.categories}</Typography>
+				<Button>
+					<Link
+						to={`/post/${postData._id}`}
+						style={{color: 'blue', textDecoration: 'none'}}
+					>
+						Read more
+					</Link>
+				</Button>
 			</CardActions>
 		</Card>
 	);

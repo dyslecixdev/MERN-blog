@@ -109,11 +109,13 @@ function Navbar() {
 					</Menu>
 
 					{/* Logo */}
-					<Typography variant='h4' component='div'>
-						<Link to='/' style={{textDecoration: 'none', color: 'white'}}>
-							LOGO
-						</Link>
-					</Typography>
+					<Button>
+						<Typography variant='h4' component='div'>
+							<Link to='/' style={{textDecoration: 'none', color: 'white'}}>
+								LOGO
+							</Link>
+						</Typography>
+					</Button>
 
 					{/* Either an avatar, or register and login links */}
 					{user ? (

@@ -311,13 +311,20 @@ function SinglePost() {
 							{post.desc}
 						</Typography>
 					</CardContent>
-					<CardActions>
+					<CardActions
+						sx={{
+							paddingRight: '2rem',
+							display: 'flex',
+							justifyContent: 'space-between'
+						}}
+					>
 						<IconButton>
 							<Checkbox
 								icon={<FavoriteBorder />} // todo Ability to increment and decrment likeCount
 								checkedIcon={<Favorite sx={{color: 'red'}} />}
 							/>
 						</IconButton>
+						<Typography variant='body2'>{post.categories}</Typography>
 						{user.username === post.user && (
 							<Button onClick={() => setEditMode(true)}>Edit Your Post</Button>
 						)}
