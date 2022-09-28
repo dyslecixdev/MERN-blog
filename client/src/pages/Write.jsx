@@ -1,14 +1,59 @@
 import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {Paper, TextField, InputLabel, Stack, Select, MenuItem, Button} from '@mui/material';
+import {
+	Paper,
+	TextField,
+	InputLabel,
+	Stack,
+	Select,
+	MenuItem,
+	Button,
+	Typography
+} from '@mui/material';
+
+import axios from 'axios';
+
+import {createPost} from '../redux/postRedux';
 
 function Write() {
+	const user = useSelector(state => state.user.currentUser);
+
 	const [title, setTitle] = useState('');
 	const [desc, setDesc] = useState('');
-	const [category, setCategory] = useState('');
+	const [categories, setCategories] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 
-	const handleSubmit = e => {
+	const dispatch = useDispatch();
+	const {isFetching} = useSelector(state => state.user);
+
+	const navigate = useNavigate();
+
+	// Creates a post
+	const handleSubmit = async e => {
 		e.preventDefault();
+		try {
+			const res = await axios.post(
+				'http://localhost:5000/posts',
+				{
+					title,
+					desc,
+					categories, // ? Do I need to include likeCount
+					photo: '', // todo Include profilePic with multer in server
+					user: user.username
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token
+					}
+				}
+			);
+			dispatch(createPost(res.data));
+			navigate('/');
+		} catch (err) {
+			setErrorMessage(err.response.data);
+		}
 	};
 
 	return (
@@ -39,6 +84,11 @@ function Write() {
 					background: 'white'
 				}}
 			>
+				{errorMessage && (
+					<Typography color='error' sx={{textAlign: 'center'}}>
+						{errorMessage}
+					</Typography>
+				)}
 				<TextField
 					label='Title'
 					type='text'
@@ -56,11 +106,11 @@ function Write() {
 					onChange={e => setDesc(e.target.value)}
 				/>
 				<Stack>
-					<InputLabel id='category'>Categories</InputLabel>
+					<InputLabel id='categories'>Categories</InputLabel>
 					<Select
-						labelId='category'
-						value={category}
-						onChange={e => setCategory(e.target.value)}
+						labelId='categories'
+						value={categories}
+						onChange={e => setCategories(e.target.value)}
 					>
 						<MenuItem value={'rock'}>Rock</MenuItem>
 						<MenuItem value={'pop'}>Pop</MenuItem>
@@ -70,7 +120,7 @@ function Write() {
 						<MenuItem value={'classical'}>Classical</MenuItem>
 					</Select>
 				</Stack>
-				<Button variant='contained' type='submit'>
+				<Button variant='contained' type='submit' disabled={isFetching}>
 					Post
 				</Button>
 			</Paper>
