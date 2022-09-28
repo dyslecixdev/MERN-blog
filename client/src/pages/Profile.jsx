@@ -1,7 +1,18 @@
 import {useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {TextField, Button, Paper, ButtonGroup, Avatar, Typography} from '@mui/material';
+import {TextField, Button, Paper, ButtonGroup, Avatar, Typography, Modal, Box} from '@mui/material';
+
+import axios from 'axios';
+
+import {
+	updateUserStart,
+	updateUserSuccess,
+	updateUserFailure,
+	deleteUserStart,
+	deleteUserSuccess,
+	deleteUserFailure
+} from '../redux/userRedux';
 
 import DefaultProfile from '../assets/default-profile.jpg';
 
@@ -9,13 +20,61 @@ function Profile() {
 	const user = useSelector(state => state.user.currentUser);
 
 	const [editMode, setEditMode] = useState(false);
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
+	const [openModal, setOpenModal] = useState(false);
+	const [username, setUsername] = useState(user.username);
+	const [email, setEmail] = useState(user.email);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 
-	const handleSubmit = e => {
+	const dispatch = useDispatch();
+	const {isFetching} = useSelector(state => state.user);
+
+	// Updates a user
+	const handleSubmit = async e => {
 		e.preventDefault();
+		dispatch(updateUserStart());
+		try {
+			const res = await axios.put(
+				`http://localhost:5000/users/${user.id}`,
+				{
+					username,
+					email,
+					password,
+					confirmPassword,
+					profilePic: '', // todo Include profilePic with multer in server
+					isAdmin: user.isAdmin // Sets isAdmin as its previous value from state
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token
+					}
+				}
+			);
+			dispatch(updateUserSuccess(res.data));
+			setEditMode(false);
+		} catch (err) {
+			setErrorMessage(err.response.data);
+			dispatch(updateUserFailure());
+		}
+	};
+
+	// Deletes a user
+	const handleDelete = async e => {
+		e.preventDefault();
+		dispatch(deleteUserStart());
+		try {
+			await axios.delete(`http://localhost:5000/users/${user.id}`, {
+				headers: {
+					Authorization: 'Bearer ' + user.token
+				}
+			});
+			dispatch(deleteUserSuccess());
+			// navigate not needed here because App.js will navigate to the login page
+		} catch (err) {
+			setErrorMessage(err.response.data);
+			dispatch(deleteUserFailure());
+		}
 	};
 
 	return (
@@ -48,6 +107,11 @@ function Profile() {
 						background: 'white'
 					}}
 				>
+					{errorMessage && (
+						<Typography color='error' sx={{textAlign: 'center'}}>
+							{errorMessage}
+						</Typography>
+					)}
 					<TextField
 						label='Username'
 						type='text'
@@ -85,16 +149,80 @@ function Profile() {
 							justifyContent: 'space-between'
 						}}
 					>
-						<Button type='button' onClick={() => setEditMode(false)}>
+						<Button
+							type='button'
+							onClick={() => setEditMode(false)}
+							disabled={isFetching}
+						>
 							Cancel
 						</Button>
-						<Button type='submit' color='success'>
+						<Button type='submit' color='success' disabled={isFetching}>
 							Update
 						</Button>
-						<Button type='button' color='error'>
+						<Button
+							type='button'
+							color='error'
+							onClick={() => setOpenModal(true)}
+							disabled={isFetching}
+						>
 							Delete
 						</Button>
 					</ButtonGroup>
+
+					{/* Modal is a popup window to confirm if the user wants to delete their account */}
+					<Modal open={openModal} onClose={() => setOpenModal(false)}>
+						<Box
+							sx={{
+								width: {
+									xs: '100%',
+									sm: '75%',
+									md: '50%',
+									lg: '35%',
+									xl: '25%'
+								},
+								height: '20vh',
+								padding: '1rem',
+								position: 'absolute',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'space-between',
+								background: 'white',
+								border: '2px solid #000'
+							}}
+						>
+							<Typography variant='h6' component='h2'>
+								Are you sure you want to delete your profile?
+							</Typography>
+							<ButtonGroup
+								variant='contained'
+								disableElevation
+								sx={{
+									width: '100%',
+									display: 'flex',
+									justifyContent: 'space-between'
+								}}
+							>
+								<Button
+									type='button'
+									color='error'
+									onClick={handleDelete}
+									disabled={isFetching}
+								>
+									Yes, I am sure
+								</Button>
+								<Button
+									type='button'
+									onClick={() => setOpenModal(false)}
+									disabled={isFetching}
+								>
+									No, I need to think
+								</Button>
+							</ButtonGroup>
+						</Box>
+					</Modal>
 				</Paper>
 			) : (
 				<Paper
