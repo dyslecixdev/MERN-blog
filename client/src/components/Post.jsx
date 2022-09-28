@@ -9,32 +9,65 @@ import {
 	CardContent,
 	Typography,
 	CardActions,
-	Checkbox
+	Checkbox,
+	Tooltip
 } from '@mui/material';
 import {Favorite, FavoriteBorder} from '@mui/icons-material';
 
-function Post() {
+import DefaultProfile from '../assets/default-profile.jpg';
+import DefaultPhoto from '../assets/default-photo.jpg';
+
+const monthNames = [
+	0,
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December'
+];
+
+function Post({postData}) {
+	const month = parseInt(postData.updatedAt.split('-')[1]);
+	const day = postData.updatedAt.split('-')[2].slice(0, 2);
+	const year = postData.updatedAt.split('-')[0];
+
 	return (
 		<Card sx={{background: 'white'}}>
 			{/* Text above the image */}
 			<CardHeader
-				avatar={<Avatar alt='Christian Demesa' color='inherit' />}
-				title='The Beatles'
-				subheader='September 2, 2022'
+				avatar={
+					// Tooltip is a hoverable effect
+					<Tooltip title={`Created by ${postData.user}`} placement='top'>
+						<Avatar
+							alt={postData.username}
+							src={null || DefaultProfile} // todo Change to be the photo of the user who created it
+							color='inherit'
+						/>
+					</Tooltip>
+				}
+				title={postData.title}
+				subheader={`${monthNames[month]} ${day} ${year}`}
 			/>
 
 			{/* Image */}
 			<CardMedia
 				component='img'
-				image='https://images.unsplash.com/photo-1597577389232-2002664a0aec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
-				alt='The Beatles'
+				image={postData.photo || DefaultPhoto}
+				alt={postData.title}
 			/>
 
 			{/* Text below the image */}
 			<CardContent>
 				<Typography variant='body2' color='text.secondary'>
-					Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas iste recusandae
-					quidem ipsum saepe eum dolorem deleniti eos commodi provident.
+					{/* todo Limit description to 3 - 4 lines */}
+					{postData.desc}
 				</Typography>
 			</CardContent>
 
@@ -42,11 +75,11 @@ function Post() {
 			<CardActions>
 				<IconButton>
 					<Checkbox
-						icon={<FavoriteBorder />}
+						icon={<FavoriteBorder />} // todo Ability to increment and decrement likeCount
 						checkedIcon={<Favorite sx={{color: 'red'}} />}
 					/>
 				</IconButton>
-				<Link to='/post/:id' style={{color: 'blue', textDecoration: 'none'}}>
+				<Link to={`/post/${postData._id}`} style={{color: 'blue', textDecoration: 'none'}}>
 					Read more
 				</Link>
 			</CardActions>

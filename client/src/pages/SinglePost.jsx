@@ -1,4 +1,6 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import {
 	Card,
@@ -17,20 +19,123 @@ import {
 	Select,
 	MenuItem,
 	Stack,
-	Paper
+	Paper,
+	Tooltip,
+	Modal,
+	Box
 } from '@mui/material';
 import {Favorite, FavoriteBorder} from '@mui/icons-material';
 
+import axios from 'axios';
+
+import DefaultProfile from '../assets/default-profile.jpg';
+import DefaultPhoto from '../assets/default-photo.jpg';
+
+const monthNames = [
+	0,
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December'
+];
+
 function SinglePost() {
-	const creator = true; // Used to mimic that the logged in user created this post in redux
+	const {id} = useParams();
+	const user = useSelector(state => state.user.currentUser);
 
 	const [editMode, setEditMode] = useState(false);
+	const [openModal, setOpenModal] = useState(false);
+	const [post, setPost] = useState({});
 	const [title, setTitle] = useState('');
 	const [desc, setDesc] = useState('');
-	const [category, setCategory] = useState('');
+	const [categories, setCategories] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
+	const [month, setMonth] = useState(0);
+	const [day, setDay] = useState(0);
+	const [year, setYear] = useState(0);
 
-	const handleSubmit = e => {
+	const navigate = useNavigate();
+
+	// Gets one post with its id
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const res = await axios.get(`http://localhost:5000/posts/${id}`);
+				setPost(res.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		fetchData();
+	}, [id, editMode]); // Included editMode as a dependency, so that the Card updates with the information
+
+	// Second useEffect to seperate the data from the post object because it is still being fetched in the above useEffect
+	useEffect(() => {
+		setTitle(post.title);
+		setDesc(post.desc);
+		setCategories(post.categories);
+		// bug Fix date because post.updatedAt is undefined until it is fetched, but undefined.split() creates an error
+		// setMonth(parseInt(post.updatedAt.split('-')[1]));
+		// setDay(post.updatedAt.split('-')[2].slice(0, 2));
+		// setYear(post.updatedAt.split('-')[0]);
+	}, [post]);
+
+	// Updates a post
+	const handleSubmit = async e => {
 		e.preventDefault();
+		try {
+			await axios.put(
+				`http://localhost:5000/posts/${id}`,
+				{
+					title,
+					desc,
+					categories,
+					// todo Include likeCount
+					photo: '', // todo Include photo with multer in server
+					user: post.user
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token
+					}
+				}
+			);
+			setEditMode(false);
+		} catch (err) {
+			setErrorMessage(err.response.data);
+		}
+	};
+
+	// Deletes a post
+	const handleDelete = async e => {
+		console.log(id);
+		e.preventDefault();
+		try {
+			await axios.delete(`http://localhost:5000/posts/${id}`, {
+				headers: {
+					Authorization: 'Bearer ' + user.token
+				}
+			});
+			navigate('/');
+		} catch (err) {
+			setErrorMessage(err.response.data);
+		}
+	};
+
+	// Resets the form when Cancel is clicked
+	const handleReset = () => {
+		setEditMode(false);
+		setTitle(post.title);
+		setDesc(post.desc);
+		setCategories(post.categories);
 	};
 
 	return (
@@ -63,6 +168,11 @@ function SinglePost() {
 						background: 'white'
 					}}
 				>
+					{errorMessage && (
+						<Typography color='error' sx={{textAlign: 'center'}}>
+							{errorMessage}
+						</Typography>
+					)}
 					<TextField
 						label='Title'
 						type='text'
@@ -80,11 +190,11 @@ function SinglePost() {
 						onChange={e => setDesc(e.target.value)}
 					/>
 					<Stack>
-						<InputLabel id='category'>Categories</InputLabel>
+						<InputLabel id='categories'>Categories</InputLabel>
 						<Select
-							labelId='category'
-							value={category}
-							onChange={e => setCategory(e.target.value)}
+							labelId='categories'
+							value={categories}
+							onChange={e => setCategories(e.target.value)}
 						>
 							<MenuItem value={'rock'}>Rock</MenuItem>
 							<MenuItem value={'pop'}>Pop</MenuItem>
@@ -104,16 +214,61 @@ function SinglePost() {
 							justifyContent: 'space-between'
 						}}
 					>
-						<Button type='button' onClick={() => setEditMode(false)}>
+						<Button type='button' onClick={handleReset}>
 							Cancel
 						</Button>
 						<Button type='submit' color='success'>
 							Update
 						</Button>
-						<Button type='button' color='error'>
+						<Button type='button' color='error' onClick={() => setOpenModal(true)}>
 							Delete
 						</Button>
 					</ButtonGroup>
+
+					<Modal open={openModal} onClose={() => setOpenModal(false)}>
+						<Box
+							sx={{
+								width: {
+									xs: '100%',
+									sm: '75%',
+									md: '50%',
+									lg: '35%',
+									xl: '25%'
+								},
+								height: '20vh',
+								padding: '1rem',
+								position: 'absolute',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'space-between',
+								background: 'white',
+								border: '2px solid #000'
+							}}
+						>
+							<Typography variant='h6' component='h2'>
+								Are you sure you want to delete your post?
+							</Typography>
+							<ButtonGroup
+								variant='contained'
+								disableElevation
+								sx={{
+									width: '100%',
+									display: 'flex',
+									justifyContent: 'space-between'
+								}}
+							>
+								<Button type='button' color='error' onClick={handleDelete}>
+									Yes, delete it
+								</Button>
+								<Button type='button' onClick={() => setOpenModal(false)}>
+									No, keep it
+								</Button>
+							</ButtonGroup>
+						</Box>
+					</Modal>
 				</Paper>
 			) : (
 				<Card
@@ -133,30 +288,39 @@ function SinglePost() {
 					}}
 				>
 					<CardHeader
-						avatar={<Avatar alt='Christian Demesa' color='inherit' />}
-						title='The Beatles'
-						subheader='September 2, 2022'
+						avatar={
+							<Tooltip title={`Created by ${post.user}`} placement='top'>
+								<Avatar
+									alt={post.username}
+									src={null || DefaultProfile} // todo Change to be the photo of the user who created it
+									color='inherit'
+								/>
+							</Tooltip>
+						}
+						title={post.title}
+						subheader={`${monthNames[month]} ${day} ${year}`}
 					/>
 					<CardMedia
 						component='img'
-						image='https://images.unsplash.com/photo-1597577389232-2002664a0aec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80'
-						alt='The Beatles'
+						image={post.photo || DefaultPhoto}
+						alt={post.title}
 					/>
 					<CardContent>
 						<Typography variant='body2' color='text.secondary'>
-							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas iste
-							recusandae quidem ipsum saepe eum dolorem deleniti eos commodi
-							provident.
+							{/* todo Limit description to 3 - 4 lines */}
+							{post.desc}
 						</Typography>
 					</CardContent>
 					<CardActions>
 						<IconButton>
 							<Checkbox
-								icon={<FavoriteBorder />}
+								icon={<FavoriteBorder />} // todo Ability to increment and decrment likeCount
 								checkedIcon={<Favorite sx={{color: 'red'}} />}
 							/>
 						</IconButton>
-						{creator && <Button onClick={() => setEditMode(true)}>Edit</Button>}
+						{user.username === post.user && (
+							<Button onClick={() => setEditMode(true)}>Edit Your Post</Button>
+						)}
 					</CardActions>
 				</Card>
 			)}

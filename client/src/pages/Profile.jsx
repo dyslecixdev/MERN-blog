@@ -77,6 +77,15 @@ function Profile() {
 		}
 	};
 
+	// Resets the form when Cancel is clicked
+	const handleReset = () => {
+		setEditMode(false);
+		setUsername(user.username);
+		setEmail(user.email);
+		setPassword('');
+		setConfirmPassword('');
+	};
+
 	return (
 		<div
 			style={{
@@ -149,11 +158,7 @@ function Profile() {
 							justifyContent: 'space-between'
 						}}
 					>
-						<Button
-							type='button'
-							onClick={() => setEditMode(false)}
-							disabled={isFetching}
-						>
+						<Button type='button' onClick={handleReset} disabled={isFetching}>
 							Cancel
 						</Button>
 						<Button type='submit' color='success' disabled={isFetching}>

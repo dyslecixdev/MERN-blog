@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {
 	Paper,
@@ -15,8 +15,6 @@ import {
 
 import axios from 'axios';
 
-import {createPost} from '../redux/postRedux';
-
 function Write() {
 	const user = useSelector(state => state.user.currentUser);
 
@@ -25,21 +23,19 @@ function Write() {
 	const [categories, setCategories] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const dispatch = useDispatch();
-	const {isFetching} = useSelector(state => state.user);
-
 	const navigate = useNavigate();
 
 	// Creates a post
 	const handleSubmit = async e => {
 		e.preventDefault();
 		try {
-			const res = await axios.post(
+			await axios.post(
 				'http://localhost:5000/posts',
 				{
 					title,
 					desc,
-					categories, // ? Do I need to include likeCount
+					categories,
+					// todo Include likeCount
 					photo: '', // todo Include profilePic with multer in server
 					user: user.username
 				},
@@ -49,7 +45,6 @@ function Write() {
 					}
 				}
 			);
-			dispatch(createPost(res.data));
 			navigate('/');
 		} catch (err) {
 			setErrorMessage(err.response.data);
@@ -57,6 +52,7 @@ function Write() {
 	};
 
 	return (
+		// Create a post form
 		<div
 			style={{
 				display: 'flex',
@@ -120,7 +116,7 @@ function Write() {
 						<MenuItem value={'classical'}>Classical</MenuItem>
 					</Select>
 				</Stack>
-				<Button variant='contained' type='submit' disabled={isFetching}>
+				<Button variant='contained' type='submit'>
 					Post
 				</Button>
 			</Paper>

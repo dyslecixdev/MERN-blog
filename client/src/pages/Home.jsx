@@ -1,8 +1,27 @@
+import {useState, useEffect} from 'react';
+
 import {Box, Grid, List, ListSubheader, ListItemButton, ListItemText} from '@mui/material';
+
+import axios from 'axios';
 
 import Post from '../components/Post';
 
 function Home() {
+	const [posts, setPosts] = useState([]);
+
+	// Gets all the posts
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const res = await axios.get('http://localhost:5000/posts');
+				setPosts(res.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		fetchData();
+	}, []);
+
 	return (
 		<Box sx={{display: 'flex'}}>
 			{/* Left posts container */}
@@ -19,42 +38,12 @@ function Home() {
 					padding: '1rem'
 				}}
 			>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} xl={3}>
-					<Post />
-				</Grid>
+				{/* Maps over all the posts, then creates a Grid item for each one */}
+				{posts.map(post => (
+					<Grid item key={post._id} xs={12} sm={6} md={4} xl={3}>
+						<Post postData={post} />
+					</Grid>
+				))}
 			</Grid>
 
 			{/* Right categories list */}

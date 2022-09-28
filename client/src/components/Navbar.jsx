@@ -2,8 +2,6 @@ import {useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
-import DefaultProfile from '../assets/default-profile.jpg';
-
 import {
 	AppBar,
 	Toolbar,
@@ -18,6 +16,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 
 import {logoutStart, logoutSuccess, logoutFailure} from '../redux/userRedux';
+
+import DefaultProfile from '../assets/default-profile.jpg';
 
 function Navbar() {
 	const user = useSelector(state => state.user.currentUser);
