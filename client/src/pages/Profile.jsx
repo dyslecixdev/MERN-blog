@@ -1,8 +1,13 @@
 import {useState} from 'react';
+import {useSelector} from 'react-redux';
 
 import {TextField, Button, Paper, ButtonGroup, Avatar, Typography} from '@mui/material';
 
+import DefaultProfile from '../assets/default-profile.jpg';
+
 function Profile() {
+	const user = useSelector(state => state.user.currentUser);
+
 	const [editMode, setEditMode] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
@@ -108,10 +113,14 @@ function Profile() {
 						background: 'white'
 					}}
 				>
-					<Avatar alt='Christian Demesa' color='inherit' />
-					<Typography variant='h5'>Username</Typography>
-					<Typography variant='h5'>Email</Typography>
-					<Button onClick={() => setEditMode(true)}>Edit</Button>
+					<Avatar
+						alt={user.username}
+						src={user.profilePic || DefaultProfile}
+						color='inherit'
+					/>
+					<Typography variant='h5'>Username: {user.username}</Typography>
+					<Typography variant='h5'>Email: {user.email}</Typography>
+					<Button onClick={() => setEditMode(true)}>Change Your Information</Button>
 				</Paper>
 			)}
 		</div>

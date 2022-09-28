@@ -1,15 +1,44 @@
 import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {TextField, Button, Paper} from '@mui/material';
+import {TextField, Button, Paper, Typography} from '@mui/material';
+
+import axios from 'axios';
+
+import {loginStart, loginSuccess, loginFailure} from '../redux/userRedux';
 
 function Register() {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 
-	const handleSubmit = e => {
+	const dispatch = useDispatch();
+	const {isFetching} = useSelector(state => state.user);
+
+	const navigate = useNavigate();
+
+	// Registers a user then logs into the app
+	const handleSubmit = async e => {
 		e.preventDefault();
+		dispatch(loginStart());
+		try {
+			const res = await axios.post('http://localhost:5000/users/register', {
+				username,
+				email,
+				password,
+				confirmPassword,
+				profilePic: '', // todo Include profilePic with multer in server
+				isAdmin: false
+			}); // Sends the email and password to the register user URL
+			dispatch(loginSuccess(res.data)); // Sends the data as an action payload to the reducer function
+			navigate('/');
+		} catch (err) {
+			setErrorMessage(err.response.data); // Sets the error message from the server side
+			dispatch(loginFailure());
+		}
 	};
 
 	return (
@@ -40,6 +69,11 @@ function Register() {
 					background: 'white'
 				}}
 			>
+				{errorMessage && (
+					<Typography color='error' sx={{textAlign: 'center'}}>
+						{errorMessage}
+					</Typography>
+				)}
 				<TextField
 					label='Username'
 					type='text'
@@ -68,7 +102,7 @@ function Register() {
 					value={confirmPassword}
 					onChange={e => setConfirmPassword(e.target.value)}
 				/>
-				<Button variant='contained' type='submit'>
+				<Button variant='contained' type='submit' disabled={isFetching}>
 					Register
 				</Button>
 			</Paper>
