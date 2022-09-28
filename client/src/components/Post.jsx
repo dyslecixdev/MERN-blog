@@ -65,8 +65,18 @@ function Post({postData}) {
 
 			{/* Text below the image */}
 			<CardContent>
-				<Typography variant='body2' color='text.secondary'>
-					{/* todo Limit description to 3 - 4 lines */}
+				<Typography
+					variant='body2'
+					color='text.secondary'
+					// Limits the description to 2 lines of text
+					sx={{
+						display: '-webkit-box',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+						WebkitLineClamp: 2,
+						WebkitBoxOrient: 'vertical'
+					}}
+				>
 					{postData.desc}
 				</Typography>
 			</CardContent>

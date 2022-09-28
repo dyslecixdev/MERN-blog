@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// todo Include userAvatar
+// todo Ability to add comments
+
 const postSchema = mongoose.Schema(
 	{
 		title: {

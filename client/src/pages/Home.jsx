@@ -8,19 +8,24 @@ import Post from '../components/Post';
 
 function Home() {
 	const [posts, setPosts] = useState([]);
+	const [catQuery, setCatQuery] = useState(null);
 
 	// Gets all the posts
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const res = await axios.get('http://localhost:5000/posts');
+				const res = await axios.get(
+					catQuery
+						? `http://localhost:5000/posts?category=${catQuery}`
+						: 'http://localhost:5000/posts'
+				); // Uses either the API URL depending on if a catQuery exists
 				setPosts(res.data);
 			} catch (err) {
 				console.log(err);
 			}
 		}
 		fetchData();
-	}, []);
+	}, [catQuery]);
 
 	return (
 		<Box sx={{display: 'flex'}}>
@@ -47,7 +52,6 @@ function Home() {
 			</Grid>
 
 			{/* Right categories list */}
-			{/* bug List is too long for a landscape phone's viewport */}
 			<Box
 				sx={{
 					width: {
@@ -68,7 +72,10 @@ function Home() {
 							sm: '23vw',
 							md: '13vw'
 						},
-						position: 'fixed'
+						position: {
+							sm: 'static',
+							md: 'fixed'
+						}
 					}}
 				>
 					<List
@@ -83,22 +90,31 @@ function Home() {
 						subheader={<ListSubheader component='div'>Categories</ListSubheader>}
 					>
 						<ListItemButton>
-							<ListItemText primary='Rock' />
+							<ListItemText primary='Rock' onClick={() => setCatQuery('rock')} />
 						</ListItemButton>
 						<ListItemButton>
-							<ListItemText primary='Pop' />
+							<ListItemText primary='Pop' onClick={() => setCatQuery('pop')} />
 						</ListItemButton>
 						<ListItemButton>
-							<ListItemText primary='Funk' />
+							<ListItemText primary='Funk' onClick={() => setCatQuery('funk')} />
 						</ListItemButton>
 						<ListItemButton>
-							<ListItemText primary='Country' />
+							<ListItemText
+								primary='Country'
+								onClick={() => setCatQuery('country')}
+							/>
 						</ListItemButton>
 						<ListItemButton>
-							<ListItemText primary='Jazz' />
+							<ListItemText primary='Jazz' onClick={() => setCatQuery('jazz')} />
 						</ListItemButton>
 						<ListItemButton>
-							<ListItemText primary='Classical' />
+							<ListItemText
+								primary='Classical'
+								onClick={() => setCatQuery('classical')}
+							/>
+						</ListItemButton>
+						<ListItemButton>
+							<ListItemText primary='All' onClick={() => setCatQuery(null)} />
 						</ListItemButton>
 					</List>
 				</Box>
