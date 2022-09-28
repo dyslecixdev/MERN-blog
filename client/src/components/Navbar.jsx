@@ -1,5 +1,8 @@
 import {useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+
+import DefaultProfile from '../assets/default-profile.jpg';
 
 import {
 	AppBar,
@@ -14,8 +17,11 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
+import {logoutStart, logoutSuccess, logoutFailure} from '../redux/userRedux';
+
 function Navbar() {
-	const user = true; // Used to mimic a logged in user in redux
+	const user = useSelector(state => state.user.currentUser);
+	const dispatch = useDispatch();
 
 	const [navMenuAnchor, setNavMenuAnchor] = useState(null);
 	const [userMenuAnchor, setUserMenuAnchor] = useState(null);
@@ -23,20 +29,36 @@ function Navbar() {
 	const navOpen = Boolean(navMenuAnchor);
 	const userOpen = Boolean(userMenuAnchor);
 
+	// Opens the hamburger icon menu
 	const handleNavClick = e => {
 		setNavMenuAnchor(e.currentTarget);
 	};
 
+	// Closes the hamburger icon menu
 	const handleNavClose = () => {
 		setNavMenuAnchor(null);
 	};
 
+	// Opens the avatar icon menu
 	const handleUserClick = e => {
 		setUserMenuAnchor(e.currentTarget);
 	};
 
+	// Closes the avatar icon menu
 	const handleUserClose = () => {
 		setUserMenuAnchor(null);
+	};
+
+	// Logs out of the app
+	const handleLogout = async () => {
+		handleUserClose(); // Prevents from the menu popup on the left side of the navbar
+		dispatch(logoutStart());
+		try {
+			dispatch(logoutSuccess());
+		} catch (err) {
+			console.log(err);
+			dispatch(logoutFailure());
+		}
 	};
 
 	return (
@@ -97,7 +119,8 @@ function Navbar() {
 					{user ? (
 						<>
 							<Avatar
-								alt='Christian Demesa'
+								alt={user.username}
+								src={user.profilePic || DefaultProfile}
 								color='inherit'
 								aria-controls={userOpen ? 'basic-menu' : undefined}
 								aria-haspopup='true'
@@ -121,7 +144,7 @@ function Navbar() {
 										PROFILE
 									</Link>
 								</MenuItem>
-								<MenuItem onClick={handleUserClose}>LOGOUT</MenuItem>
+								<MenuItem onClick={handleLogout}>LOGOUT</MenuItem>
 							</Menu>
 						</>
 					) : (

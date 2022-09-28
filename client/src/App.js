@@ -1,4 +1,5 @@
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -11,17 +12,20 @@ import SinglePost from './pages/SinglePost';
 import './App.css';
 
 function App() {
-	const user = true; // Used to mimic a logged in user in redux
+	const user = useSelector(state => state.user.currentUser); // Logged in user from redux
 
 	return (
 		<div className='backgroundContainer'>
 			<Routes>
 				<Route path='/' element={<Navbar />}>
 					<Route index element={<Home />} />
-					<Route path='/register' element={user ? <Home /> : <Register />} />
-					<Route path='/login' element={user ? <Home /> : <Login />} />
-					<Route path='/write' element={user ? <Write /> : <Login />} />
-					<Route path='/profile' element={user ? <Profile /> : <Login />} />
+					<Route path='/register' element={user ? <Navigate to='/' /> : <Register />} />
+					<Route path='/login' element={user ? <Navigate to='/' /> : <Login />} />
+					<Route path='/write' element={user ? <Write /> : <Navigate to='/login' />} />
+					<Route
+						path='/profile'
+						element={user ? <Profile /> : <Navigate to='/login' />}
+					/>
 					<Route path='/post/:id' element={<SinglePost />} />
 				</Route>
 			</Routes>
