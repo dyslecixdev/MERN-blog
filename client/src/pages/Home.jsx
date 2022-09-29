@@ -6,6 +6,8 @@ import axios from 'axios';
 
 import Post from '../components/Post';
 
+// todo Filter posts by user who created it
+
 function Home() {
 	const [posts, setPosts] = useState([]);
 	const [catQuery, setCatQuery] = useState(null);

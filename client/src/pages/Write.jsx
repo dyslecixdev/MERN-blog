@@ -37,7 +37,8 @@ function Write() {
 					categories,
 					// todo Include likeCount
 					photo: '', // todo Include profilePic with multer in server
-					user: user.username
+					user: user.username,
+					userAvatar: user.profilePic
 				},
 				{
 					headers: {

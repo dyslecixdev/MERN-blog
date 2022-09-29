@@ -48,7 +48,7 @@ function Post({postData}) {
 					<Tooltip title={`Created by ${postData.user}`} placement='top'>
 						<Avatar
 							alt={postData.username}
-							src={null || DefaultProfile} // todo Change to be the photo of the user who created it
+							src={postData.userAvatar || DefaultProfile}
 							color='inherit'
 						/>
 					</Tooltip>

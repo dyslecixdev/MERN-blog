@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// todo Include userAvatar
 // todo Ability to add comments
 
 const postSchema = mongoose.Schema(
@@ -26,6 +25,9 @@ const postSchema = mongoose.Schema(
 		user: {
 			type: String,
 			required: true
+		},
+		userAvatar: {
+			type: String
 		}
 	},
 	{timestamps: true}

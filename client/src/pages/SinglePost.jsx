@@ -102,7 +102,8 @@ function SinglePost() {
 					categories,
 					// todo Include likeCount
 					photo: '', // todo Include photo with multer in server
-					user: post.user
+					user: post.user,
+					userAvatar: post.userAvatar
 				},
 				{
 					headers: {
@@ -118,7 +119,6 @@ function SinglePost() {
 
 	// Deletes a post
 	const handleDelete = async e => {
-		console.log(id);
 		e.preventDefault();
 		try {
 			await axios.delete(`http://localhost:5000/posts/${id}`, {
@@ -294,7 +294,7 @@ function SinglePost() {
 							<Tooltip title={`Created by ${post.user}`} placement='top'>
 								<Avatar
 									alt={post.username}
-									src={null || DefaultProfile} // todo Change to be the photo of the user who created it
+									src={post.userAvatar || DefaultProfile}
 									color='inherit'
 								/>
 							</Tooltip>
@@ -326,7 +326,7 @@ function SinglePost() {
 							/>
 						</IconButton>
 						<Typography variant='p'>{post.categories}</Typography>
-						{user.username === post.user ? (
+						{user.username === post.user || user.isAdmin ? (
 							<Button onClick={() => setEditMode(true)}>Edit Your Post</Button>
 						) : (
 							<Typography variant='p'>

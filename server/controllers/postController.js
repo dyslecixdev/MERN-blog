@@ -16,7 +16,8 @@ const createPost = asyncHandler(async (req, res) => {
 		categories,
 		likeCount,
 		photo: '',
-		user: req.user.username // Sets the user as the logged in user
+		user: req.user.username, // Sets the user as the logged in user
+		userAvatar: req.user.profilePic // Sets the userAvatar as the logged in user's profilePic
 	});
 
 	if (newPost) res.status(201).json(newPost);
