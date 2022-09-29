@@ -82,10 +82,12 @@ function SinglePost() {
 		setTitle(post.title);
 		setDesc(post.desc);
 		setCategories(post.categories);
-		// bug Fix date because post.updatedAt is undefined until it is fetched, but undefined.split() creates an error
-		// setMonth(parseInt(post.updatedAt.split('-')[1]));
-		// setDay(post.updatedAt.split('-')[2].slice(0, 2));
-		// setYear(post.updatedAt.split('-')[0]);
+		// if statement needed to avoid bug where split() on undefined creates an error
+		if (post.updatedAt) {
+			setMonth(parseInt(post.updatedAt.split('-')[1]));
+			setDay(post.updatedAt.split('-')[2].slice(0, 2));
+			setYear(post.updatedAt.split('-')[0]);
+		}
 	}, [post]);
 
 	// Updates a post
@@ -307,7 +309,6 @@ function SinglePost() {
 					/>
 					<CardContent>
 						<Typography variant='body2' color='text.secondary'>
-							{/* todo Limit description to 3 - 4 lines */}
 							{post.desc}
 						</Typography>
 					</CardContent>
@@ -324,9 +325,13 @@ function SinglePost() {
 								checkedIcon={<Favorite sx={{color: 'red'}} />}
 							/>
 						</IconButton>
-						<Typography variant='body2'>{post.categories}</Typography>
-						{user.username === post.user && (
+						<Typography variant='p'>{post.categories}</Typography>
+						{user.username === post.user ? (
 							<Button onClick={() => setEditMode(true)}>Edit Your Post</Button>
+						) : (
+							<Typography variant='p'>
+								Only the user who created this post can edit it
+							</Typography>
 						)}
 					</CardActions>
 				</Card>

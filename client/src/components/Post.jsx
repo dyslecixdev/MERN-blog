@@ -40,7 +40,7 @@ function Post({postData}) {
 	const year = postData.updatedAt.split('-')[0];
 
 	return (
-		<Card sx={{background: 'white'}}>
+		<Card sx={{minHeight: {xs: '55vh', sm: '40vh'}, background: 'white'}}>
 			{/* Text above the image */}
 			<CardHeader
 				avatar={
@@ -65,7 +65,7 @@ function Post({postData}) {
 			/>
 
 			{/* Text below the image */}
-			<CardContent>
+			<CardContent sx={{minHeight: '10vh', borderBottom: '1px solid lightgray'}}>
 				<Typography
 					variant='body2'
 					color='text.secondary'
@@ -96,7 +96,7 @@ function Post({postData}) {
 						checkedIcon={<Favorite sx={{color: 'red'}} />}
 					/>
 				</IconButton>
-				<Typography variant='body2'>{postData.categories}</Typography>
+				<Typography variant='p'>{postData.categories}</Typography>
 				<Button>
 					<Link
 						to={`/post/${postData._id}`}
