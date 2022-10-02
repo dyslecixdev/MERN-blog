@@ -11,7 +11,7 @@ const generateToken = userId => {
 
 // Registers a user
 const registerUser = asyncHandler(async (req, res) => {
-	const {username, email, password, confirmPassword, profilePic, isAdmin} = req.body;
+	const {username, email, password, confirmPassword, isAdmin} = req.body;
 
 	const userExists = await User.findOne({email});
 	if (userExists) {
@@ -35,12 +35,17 @@ const registerUser = asyncHandler(async (req, res) => {
 	const salt = await bcrypt.genSalt(10);
 	const hashedPassword = await bcrypt.hash(password, salt);
 
+	// If an image was uploaded in Register.jsx, sets its path toward the public folder in the client folder
+	let filePath;
+	if (req.file) filePath = `./${req.file.filename}`;
+	else filePath = 'DefaultProfile';
+
 	const newUser = await User.create({
 		username,
 		email,
 		password: hashedPassword,
 		confirmPassword: hashedPassword,
-		profilePic: '',
+		profilePic: filePath,
 		isAdmin
 	});
 

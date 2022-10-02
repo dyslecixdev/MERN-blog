@@ -2,7 +2,8 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {TextField, Button, Paper, Typography} from '@mui/material';
+import {TextField, Button, Paper, Typography, Fab, ButtonGroup, Tooltip} from '@mui/material';
+import {Add} from '@mui/icons-material';
 
 import axios from 'axios';
 
@@ -13,6 +14,7 @@ function Register() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [profilePic, setProfilePic] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const dispatch = useDispatch();
@@ -24,15 +26,15 @@ function Register() {
 	const handleSubmit = async e => {
 		e.preventDefault();
 		dispatch(loginStart());
+		const formData = new FormData(); // Uses FormData to send a 'multipart/form-data' since there is an image
+		formData.append('username', username);
+		formData.append('email', email);
+		formData.append('password', password);
+		formData.append('confirmPassword', confirmPassword);
+		formData.append('profilePic', profilePic);
+		formData.append('isAdmin', false);
 		try {
-			const res = await axios.post('http://localhost:5000/users/register', {
-				username,
-				email,
-				password,
-				confirmPassword,
-				profilePic: '', // todo Include profilePic with multer in server
-				isAdmin: false
-			}); // Sends the email and password to the register user URL
+			const res = await axios.post('http://localhost:5000/users/register', formData); // Sends the email and password to the register user URL
 			dispatch(loginSuccess(res.data)); // Sends the data as an action payload to the reducer function
 			navigate('/');
 		} catch (err) {
@@ -102,9 +104,36 @@ function Register() {
 					value={confirmPassword}
 					onChange={e => setConfirmPassword(e.target.value)}
 				/>
-				<Button variant='contained' type='submit' disabled={isFetching}>
-					Register
-				</Button>
+				<ButtonGroup
+					variant='contained'
+					disableElevation
+					sx={{
+						width: '100%',
+						display: 'flex',
+						justifyContent: 'space-between'
+					}}
+				>
+					<Tooltip title='Profile Picture (optional)' placement='top'>
+						<Fab
+							component='label'
+							htmlFor='profilePicUpload'
+							type='button'
+							color='secondary'
+							disabled={isFetching}
+						>
+							<Add />
+							<input
+								id='profilePicUpload'
+								type='file'
+								hidden
+								onChange={e => setProfilePic(e.target.files[0])}
+							/>
+						</Fab>
+					</Tooltip>
+					<Button type='submit' disabled={isFetching}>
+						Register
+					</Button>
+				</ButtonGroup>
 			</Paper>
 		</div>
 	);

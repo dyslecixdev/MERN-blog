@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Outlet, Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -15,6 +15,8 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
+import axios from 'axios';
+
 import {logoutStart, logoutSuccess, logoutFailure} from '../redux/userRedux';
 
 import DefaultProfile from '../assets/default-profile.jpg';
@@ -23,11 +25,31 @@ function Navbar() {
 	const user = useSelector(state => state.user.currentUser);
 	const dispatch = useDispatch();
 
+	const [avatarPic, setAvatarPic] = useState(DefaultProfile);
 	const [navMenuAnchor, setNavMenuAnchor] = useState(null);
 	const [userMenuAnchor, setUserMenuAnchor] = useState(null);
 
 	const navOpen = Boolean(navMenuAnchor);
 	const userOpen = Boolean(userMenuAnchor);
+
+	// Sets the AvatarPic as DefaultProfile or the uploaded image
+	useEffect(() => {
+		async function getProfilePic() {
+			try {
+				const res = await axios.get(`http://localhost:5000/users/${user.id}`, {
+					headers: {
+						Authorization: 'Bearer ' + user.token
+					}
+				});
+				// If no image was uploaded in Register.jsx, then it was given 'DefaultProfile' in userController.js
+				if (res.data.profilePic === 'DefaultProfile') setAvatarPic(DefaultProfile);
+				else setAvatarPic(res.data.profilePic);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		getProfilePic();
+	}, [user]);
 
 	// Opens the hamburger icon menu
 	const handleNavClick = e => {
@@ -60,6 +82,8 @@ function Navbar() {
 			dispatch(logoutFailure());
 		}
 	};
+
+	console.log(avatarPic); // http://localhost:5000/assets/1664484375146-inventor.jpg
 
 	return (
 		<>
@@ -122,7 +146,7 @@ function Navbar() {
 						<>
 							<Avatar
 								alt={user.username}
-								src={user.profilePic || DefaultProfile}
+								src={avatarPic}
 								color='inherit'
 								aria-controls={userOpen ? 'basic-menu' : undefined}
 								aria-haspopup='true'
