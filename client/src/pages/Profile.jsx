@@ -1,7 +1,19 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {TextField, Button, Paper, ButtonGroup, Avatar, Typography, Modal, Box} from '@mui/material';
+import {
+	TextField,
+	Button,
+	Paper,
+	ButtonGroup,
+	Avatar,
+	Typography,
+	Modal,
+	Box,
+	Tooltip,
+	Fab
+} from '@mui/material';
+import {Add} from '@mui/icons-material';
 
 import axios from 'axios';
 
@@ -25,6 +37,7 @@ function Profile() {
 	const [email, setEmail] = useState(user.email);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [profilePic, setProfilePic] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const dispatch = useDispatch();
@@ -34,25 +47,21 @@ function Profile() {
 	const handleSubmit = async e => {
 		e.preventDefault();
 		dispatch(updateUserStart());
+		const formData = new FormData();
+		formData.append('username', username);
+		formData.append('email', email);
+		formData.append('password', password);
+		formData.append('confirmPassword', confirmPassword);
+		formData.append('profilePic', profilePic);
+		formData.append('isAdmin', user.isAdmin); // Sets isAdmin as its previous value from state
 		try {
-			const res = await axios.put(
-				`http://localhost:5000/users/${user.id}`,
-				{
-					username,
-					email,
-					password,
-					confirmPassword,
-					profilePic: '', // todo Include profilePic with multer in server
-					isAdmin: user.isAdmin // Sets isAdmin as its previous value from state
-				},
-				{
-					headers: {
-						Authorization: 'Bearer ' + user.token
-					}
+			const res = await axios.put(`http://localhost:5000/users/${user.id}`, formData, {
+				headers: {
+					Authorization: 'Bearer ' + user.token
 				}
-			);
+			});
 			dispatch(updateUserSuccess(res.data));
-			setEditMode(false);
+			handleReset();
 		} catch (err) {
 			setErrorMessage(err.response.data);
 			dispatch(updateUserFailure());
@@ -84,6 +93,7 @@ function Profile() {
 		setEmail(user.email);
 		setPassword('');
 		setConfirmPassword('');
+		setProfilePic('');
 	};
 
 	return (
@@ -153,11 +163,32 @@ function Profile() {
 						variant='contained'
 						disableElevation
 						sx={{
-							width: {xs: '100%', sm: '50%'},
+							width: {
+								xs: '100%',
+								sm: '80%',
+								md: '70%'
+							},
 							display: 'flex',
 							justifyContent: 'space-between'
 						}}
 					>
+						<Tooltip title='Profile Picture (optional)' placement='top'>
+							<Fab
+								component='label'
+								htmlFor='profilePicUpload'
+								type='button'
+								color='secondary'
+								disabled={isFetching}
+							>
+								<Add />
+								<input
+									id='profilePicUpload'
+									type='file'
+									hidden
+									onChange={e => setProfilePic(e.target.files[0])}
+								/>
+							</Fab>
+						</Tooltip>
 						<Button type='button' onClick={handleReset} disabled={isFetching}>
 							Cancel
 						</Button>

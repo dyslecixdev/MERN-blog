@@ -48,7 +48,7 @@ function Post({postData}) {
 					<Tooltip title={`Created by ${postData.user}`} placement='top'>
 						<Avatar
 							alt={postData.username}
-							src={postData.userAvatar || DefaultProfile}
+							src={postData.userAvatar || DefaultProfile} // bug If the user's profilePic is updated, it does not change here
 							color='inherit'
 						/>
 					</Tooltip>

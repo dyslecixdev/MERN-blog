@@ -42,7 +42,7 @@ router.post('/register', upload.single('profilePic'), registerUser); // upload.s
 router.post('/login', loginUser);
 router.get('/:id', protect, getOneUser);
 router.get('/', protect, getAllUsers);
-router.put('/:id', protect, updateUser);
+router.put('/:id', protect, upload.single('profilePic'), updateUser);
 router.delete('/:id', protect, deleteUser);
 
 module.exports = router;

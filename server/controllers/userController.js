@@ -37,8 +37,15 @@ const registerUser = asyncHandler(async (req, res) => {
 
 	// If an image was uploaded in Register.jsx, sets its path toward the public folder in the client folder
 	let filePath;
-	if (req.file) filePath = `./${req.file.filename}`;
-	else filePath = 'DefaultProfile';
+	if (req.file) {
+		if (
+			req.file.mimetype === 'image/png' ||
+			req.file.mimetype === 'image/jpg' ||
+			req.file.mimetype === 'image/jpeg'
+		)
+			filePath = `./${req.file.filename}`;
+		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
+	} else filePath = 'DefaultProfile';
 
 	const newUser = await User.create({
 		username,
@@ -138,9 +145,28 @@ const updateUser = asyncHandler(async (req, res) => {
 		req.body.confirmPassword = hashedPassword;
 	}
 
+	let filePath;
+	if (req.file) {
+		if (
+			req.file.mimetype === 'image/png' ||
+			req.file.mimetype === 'image/jpg' ||
+			req.file.mimetype === 'image/jpeg'
+		)
+			filePath = `./${req.file.filename}`;
+		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
+	}
+
 	let updatedUser;
 	try {
-		updatedUser = await User.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
+		updatedUser = await User.findByIdAndUpdate(
+			req.params.id,
+			{
+				$set: req.body,
+				profilePic: filePath // Since the profilePic is in req.file, we need to update it separately from the above req.body
+			},
+			{new: true}
+		);
+		// todo Update the posts' avatarUser to fix the bug in Post.jsx
 	} catch (err) {
 		console.log(err.message.white.bgRed);
 		res.status(400).json('Invalid updated user data');

@@ -83,8 +83,6 @@ function Navbar() {
 		}
 	};
 
-	console.log(avatarPic); // http://localhost:5000/assets/1664484375146-inventor.jpg
-
 	return (
 		<>
 			{/* AppBar position is required to avoid it overlapping other MUI components */}
