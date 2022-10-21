@@ -14,7 +14,7 @@ const protect = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, './client/public'); // Path of the uploaded image's folder
+		cb(null, './server/assets'); // Path of the uploaded image's folder
 	},
 	filename: (req, file, cb) => {
 		cb(null, `${Date.now()}-${file.originalname.toLowerCase().split(' ').join('-')}`); // Renames each image filename using the current Date to make it unique

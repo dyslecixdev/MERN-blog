@@ -279,7 +279,12 @@ function Profile() {
 				>
 					<Avatar
 						alt={user.username}
-						src={user.profilePic || DefaultProfile}
+						src={
+							user.profilePic !== ''
+								? `http://localhost:5000/static//${user.profilePic}`
+								: DefaultProfile
+						}
+						sx={{width: 100, height: 100}}
 						color='inherit'
 					/>
 					<Typography variant='h5'>Username: {user.username}</Typography>

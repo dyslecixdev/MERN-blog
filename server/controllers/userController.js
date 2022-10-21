@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 	const salt = await bcrypt.genSalt(10);
 	const hashedPassword = await bcrypt.hash(password, salt);
 
-	// If an image was uploaded in Register.jsx, sets its path toward the public folder in the client folder
+	// If an image was uploaded in Register.jsx, set its path toward the public folder in the client folder
 	let filePath;
 	if (req.file) {
 		if (
@@ -43,9 +43,9 @@ const registerUser = asyncHandler(async (req, res) => {
 			req.file.mimetype === 'image/jpg' ||
 			req.file.mimetype === 'image/jpeg'
 		)
-			filePath = `./${req.file.filename}`;
+			filePath = req.file.filename;
 		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
-	} else filePath = 'DefaultProfile';
+	} else filePath = '';
 
 	const newUser = await User.create({
 		username,
@@ -152,7 +152,7 @@ const updateUser = asyncHandler(async (req, res) => {
 			req.file.mimetype === 'image/jpg' ||
 			req.file.mimetype === 'image/jpeg'
 		)
-			filePath = `./${req.file.filename}`;
+			filePath = req.file.filename;
 		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
 	}
 
