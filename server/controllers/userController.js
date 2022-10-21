@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 	const salt = await bcrypt.genSalt(10);
 	const hashedPassword = await bcrypt.hash(password, salt);
 
-	// If an image was uploaded in Register.jsx, set its path toward the public folder in the client folder
+	// If an image was uploaded in Register.jsx, set its name in filePath. Otherwise make it an empty string.
 	let filePath;
 	if (req.file) {
 		if (
@@ -166,10 +166,21 @@ const updateUser = asyncHandler(async (req, res) => {
 			},
 			{new: true}
 		);
-		// todo Update the posts' avatarUser to fix the bug in Post.jsx
 	} catch (err) {
 		console.log(err.message.white.bgRed);
 		res.status(400).json('Invalid updated user data');
+	}
+
+	// Updates the user's posts' userAvatar
+	let updatedPosts;
+	try {
+		updatedPosts = await Post.updateMany(
+			{user: req.user.username},
+			{$set: {userAvatar: filePath}}
+		);
+	} catch (err) {
+		console.log(err.message.white.bgRed);
+		res.status(400).json("Invalid updated user's posts data");
 	}
 
 	if (req.user.id === req.params.id || req.user.isAdmin)
@@ -179,7 +190,8 @@ const updateUser = asyncHandler(async (req, res) => {
 			email: updatedUser.email,
 			profilePic: updatedUser.profilePic,
 			isAdmin: updatedUser.isAdmin,
-			token: generateToken(existingUser.id)
+			token: generateToken(existingUser.id),
+			updatedPosts
 		});
 	else res.status(401).json('Only an administrator or the logged in user can update themself');
 });

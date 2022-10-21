@@ -281,7 +281,7 @@ function Profile() {
 						alt={user.username}
 						src={
 							user.profilePic !== ''
-								? `http://localhost:5000/static//${user.profilePic}`
+								? `http://localhost:5000/static/${user.profilePic}`
 								: DefaultProfile
 						}
 						sx={{width: 100, height: 100}}
