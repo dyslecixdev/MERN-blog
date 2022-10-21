@@ -22,9 +22,10 @@ import {
 	Paper,
 	Tooltip,
 	Modal,
-	Box
+	Box,
+	Fab
 } from '@mui/material';
-import {Favorite, FavoriteBorder} from '@mui/icons-material';
+import {Favorite, FavoriteBorder, Add} from '@mui/icons-material';
 
 import axios from 'axios';
 
@@ -57,6 +58,7 @@ function SinglePost() {
 	const [title, setTitle] = useState('');
 	const [desc, setDesc] = useState('');
 	const [categories, setCategories] = useState('');
+	const [photo, setPhoto] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 	const [month, setMonth] = useState(0);
 	const [day, setDay] = useState(0);
@@ -93,24 +95,20 @@ function SinglePost() {
 	// Updates a post
 	const handleSubmit = async e => {
 		e.preventDefault();
+		const formData = new FormData();
+		formData.append('title', title);
+		formData.append('desc', desc);
+		formData.append('categories', categories);
+		formData.append('photo', photo);
+		// todo include likeCount
+		formData.append('user', post.user);
+		formData.append('userAvatar', post.userAvatar);
 		try {
-			await axios.put(
-				`http://localhost:5000/posts/${id}`,
-				{
-					title,
-					desc,
-					categories,
-					// todo Include likeCount
-					photo: '', // todo Include photo with multer in server
-					user: post.user,
-					userAvatar: post.userAvatar
-				},
-				{
-					headers: {
-						Authorization: 'Bearer ' + user.token
-					}
+			await axios.put(`http://localhost:5000/posts/${id}`, formData, {
+				headers: {
+					Authorization: 'Bearer ' + user.token
 				}
-			);
+			});
 			setEditMode(false);
 		} catch (err) {
 			setErrorMessage(err.response.data);
@@ -211,11 +209,31 @@ function SinglePost() {
 						variant='contained'
 						disableElevation
 						sx={{
-							width: {xs: '100%', sm: '50%'},
+							width: {
+								xs: '100%',
+								sm: '80%',
+								md: '70%'
+							},
 							display: 'flex',
 							justifyContent: 'space-between'
 						}}
 					>
+						<Tooltip title='Profile Picture (optional)' placement='top'>
+							<Fab
+								component='label'
+								htmlFor='profilePicUpload'
+								type='button'
+								color='secondary'
+							>
+								<Add />
+								<input
+									id='profilePicUpload'
+									type='file'
+									hidden
+									onChange={e => setPhoto(e.target.files[0])}
+								/>
+							</Fab>
+						</Tooltip>
 						<Button type='button' onClick={handleReset}>
 							Cancel
 						</Button>
@@ -294,7 +312,12 @@ function SinglePost() {
 							<Tooltip title={`Created by ${post.user}`} placement='top'>
 								<Avatar
 									alt={post.username}
-									src={post.userAvatar || DefaultProfile}
+									src={
+										post.userAvatar !== ''
+											? `http://localhost:5000/static/${post.userAvatar}`
+											: DefaultProfile
+									}
+									sx={{width: 100, height: 100}}
 									color='inherit'
 								/>
 							</Tooltip>
@@ -304,7 +327,11 @@ function SinglePost() {
 					/>
 					<CardMedia
 						component='img'
-						image={post.photo || DefaultPhoto}
+						image={
+							post.photo !== ''
+								? `http://localhost:5000/static/${post.photo}`
+								: DefaultPhoto
+						}
 						alt={post.title}
 					/>
 					<CardContent>
@@ -326,10 +353,10 @@ function SinglePost() {
 							/>
 						</IconButton>
 						<Typography variant='p'>{post.categories}</Typography>
-						{user.username === post.user || user.isAdmin ? (
+						{user && (user.username === post.user || user.isAdmin) ? (
 							<Button onClick={() => setEditMode(true)}>Edit Your Post</Button>
 						) : (
-							<Typography variant='p'>
+							<Typography variant='p' sx={{color: 'red'}}>
 								Only the user who created this post can edit it
 							</Typography>
 						)}

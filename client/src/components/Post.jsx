@@ -48,7 +48,11 @@ function Post({postData}) {
 					<Tooltip title={`Created by ${postData.user}`} placement='top'>
 						<Avatar
 							alt={postData.username}
-							src={postData.userAvatar || DefaultProfile} // bug If the user's profilePic is updated, it does not change here
+							src={
+								postData.userAvatar !== ''
+									? `http://localhost:5000/static/${postData.userAvatar}`
+									: DefaultProfile
+							}
 							color='inherit'
 						/>
 					</Tooltip>
@@ -60,7 +64,11 @@ function Post({postData}) {
 			{/* Image */}
 			<CardMedia
 				component='img'
-				image={postData.photo || DefaultPhoto}
+				image={
+					postData.photo !== ''
+						? `http://localhost:5000/static/${postData.photo}`
+						: DefaultPhoto
+				}
 				alt={postData.title}
 			/>
 

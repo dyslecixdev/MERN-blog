@@ -3,19 +3,31 @@ const Post = require('../models/postModel');
 
 // Creates a post
 const createPost = asyncHandler(async (req, res) => {
-	const {title, desc, categories, likeCount, photo} = req.body;
+	const {title, desc, categories, likeCount} = req.body;
 
 	if (!title || !desc) {
 		res.status(400).json('Title and description are required');
 		return;
 	}
 
+	// If an image was uploaded in Write.jsx, set its name in filePath. Otherwise make it an empty string.
+	let filePath;
+	if (req.file) {
+		if (
+			req.file.mimetype === 'image/png' ||
+			req.file.mimetype === 'image/jpg' ||
+			req.file.mimetype === 'image/jpeg'
+		)
+			filePath = req.file.filename;
+		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
+	} else filePath = '';
+
 	const newPost = await Post.create({
 		title,
 		desc,
 		categories,
 		likeCount,
-		photo: '',
+		photo: filePath,
 		user: req.user.username, // Sets the user as the logged in user
 		userAvatar: req.user.profilePic // Sets the userAvatar as the logged in user's profilePic
 	});
@@ -61,13 +73,33 @@ const updatePost = asyncHandler(async (req, res) => {
 		return;
 	}
 
+	let filePath;
+	if (req.file) {
+		if (
+			req.file.mimetype === 'image/png' ||
+			req.file.mimetype === 'image/jpg' ||
+			req.file.mimetype === 'image/jpeg'
+		)
+			filePath = req.file.filename;
+		else res.status(409).json('The only accepted image files are .png, .jpg, and .jpeg');
+	}
+
 	let updatedPost;
 	try {
-		updatedPost = await Post.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
+		updatedPost = await Post.findByIdAndUpdate(
+			req.params.id,
+			{
+				$set: req.body,
+				photo: filePath // Since the photo is in req.file, we need to update it separately from the above req.body
+			},
+			{new: true}
+		);
 	} catch (err) {
 		console.log(err.message.white.bgRed);
 		res.status(400).json('Invalid updated post data');
 	}
+
+	console.log(req.body, filePath);
 
 	if (req.user.username === existingPost.user || req.user.isAdmin)
 		res.status(201).json(updatedPost);

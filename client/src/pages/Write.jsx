@@ -10,17 +10,22 @@ import {
 	Select,
 	MenuItem,
 	Button,
-	Typography
+	Typography,
+	ButtonGroup,
+	Tooltip,
+	Fab
 } from '@mui/material';
+import {Add} from '@mui/icons-material';
 
 import axios from 'axios';
 
 function Write() {
 	const user = useSelector(state => state.user.currentUser);
 
-	const [title, setTitle] = useState('');
+	const [title, setTitle] = useState(''); // bug Error occurs if you try to use the same title of another post
 	const [desc, setDesc] = useState('');
 	const [categories, setCategories] = useState('');
+	const [photo, setPhoto] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const navigate = useNavigate();
@@ -28,24 +33,20 @@ function Write() {
 	// Creates a post
 	const handleSubmit = async e => {
 		e.preventDefault();
+		const formData = new FormData();
+		formData.append('title', title);
+		formData.append('desc', desc);
+		formData.append('categories', categories);
+		formData.append('photo', photo);
+		// todo Include likeCount
+		formData.append('user', user.username);
+		formData.append('userAvatar', user.profilePic);
 		try {
-			await axios.post(
-				'http://localhost:5000/posts',
-				{
-					title,
-					desc,
-					categories,
-					// todo Include likeCount
-					photo: '', // todo Include profilePic with multer in server
-					user: user.username,
-					userAvatar: user.profilePic
-				},
-				{
-					headers: {
-						Authorization: 'Bearer ' + user.token
-					}
+			await axios.post('http://localhost:5000/posts', formData, {
+				headers: {
+					Authorization: 'Bearer ' + user.token
 				}
-			);
+			});
 			navigate('/');
 		} catch (err) {
 			setErrorMessage(err.response.data);
@@ -117,9 +118,38 @@ function Write() {
 						<MenuItem value={'classical'}>Classical</MenuItem>
 					</Select>
 				</Stack>
-				<Button variant='contained' type='submit'>
-					Post
-				</Button>
+				<ButtonGroup
+					variant='contained'
+					disableElevation
+					sx={{
+						width: {
+							xs: '60%',
+							sm: '30%'
+						},
+						display: 'flex',
+						justifyContent: 'space-between'
+					}}
+				>
+					<Tooltip title='Photo (optional)' placement='top'>
+						<Fab
+							component='label'
+							htmlFor='photoUpload'
+							type='button'
+							color='secondary'
+						>
+							<Add />
+							<input
+								id='photoUpload'
+								type='file'
+								hidden
+								onChange={e => setPhoto(e.target.files[0])}
+							/>
+						</Fab>
+					</Tooltip>
+					<Button variant='contained' type='submit'>
+						Post
+					</Button>
+				</ButtonGroup>
 			</Paper>
 		</div>
 	);
