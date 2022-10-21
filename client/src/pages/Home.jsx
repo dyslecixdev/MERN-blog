@@ -1,3 +1,5 @@
+// Home page
+
 import {useState, useEffect} from 'react';
 
 import {Box, Grid, List, ListSubheader, ListItemButton, ListItemText} from '@mui/material';
@@ -6,7 +8,7 @@ import axios from 'axios';
 
 import Post from '../components/Post';
 
-// todo Filter posts by user who created it
+// todo Create another categories list to filter posts by oldest or newest data
 
 function Home() {
 	const [posts, setPosts] = useState([]);

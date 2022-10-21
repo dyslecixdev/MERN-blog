@@ -1,3 +1,5 @@
+// Each post on the home page
+
 import {Link} from 'react-router-dom';
 
 import {

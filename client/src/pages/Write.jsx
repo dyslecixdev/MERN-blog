@@ -1,3 +1,5 @@
+// Create a post page
+
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useSelector} from 'react-redux';
@@ -22,7 +24,7 @@ import axios from 'axios';
 function Write() {
 	const user = useSelector(state => state.user.currentUser);
 
-	const [title, setTitle] = useState(''); // bug Error occurs if you try to use the same title of another post
+	const [title, setTitle] = useState('');
 	const [desc, setDesc] = useState('');
 	const [categories, setCategories] = useState('');
 	const [photo, setPhoto] = useState('');

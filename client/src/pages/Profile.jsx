@@ -1,3 +1,5 @@
+// User's profile page
+
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 

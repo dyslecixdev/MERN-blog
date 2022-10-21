@@ -1,3 +1,5 @@
+// Page that shows a post's full information, and an edit form for the user who created it or an admin
+
 import {useState, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {useSelector} from 'react-redux';
@@ -66,7 +68,7 @@ function SinglePost() {
 
 	const navigate = useNavigate();
 
-	// Gets one post with its id
+	// Gets the current post's data
 	useEffect(() => {
 		async function fetchData() {
 			try {

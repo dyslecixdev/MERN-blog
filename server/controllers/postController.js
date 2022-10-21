@@ -99,8 +99,6 @@ const updatePost = asyncHandler(async (req, res) => {
 		res.status(400).json('Invalid updated post data');
 	}
 
-	console.log(req.body, filePath);
-
 	if (req.user.username === existingPost.user || req.user.isAdmin)
 		res.status(201).json(updatedPost);
 	else res.status(401).json('Only an administrator or the logged in user can update their post');
