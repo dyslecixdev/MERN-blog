@@ -33,6 +33,8 @@ and react-router-dom to handle the app's web routing.
 - User will have another list to filter all the posts by oldest or newest date.
 - User will be able to like or unlike posts.
 - Logged in user will be able to view the like count of any of their posts.
+- Logged in user will be able to leave comments on posts.
+- Logged in user will be able to view the comments of any of their posts.
 
 ## Demos
 ### Register a User
