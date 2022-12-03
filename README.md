@@ -10,7 +10,7 @@ cors tells the browser that the app at its origin (e.g. localhost:5000) has acce
 dotenv to keep certain information secret, express-async-handler to handle async express route exceptions, 
 jsonwebtoken to give each user a unique token, and multer to upload files.
 
-The frontend utilizes Material-UI with Emotion for styling, axios for HTTP requests, react-redux, redux-persist, and reduxjs/toolkit to manage the logged in user's state, react-router-dom to handle the app's web routing, and Google Fonts.
+The frontend utilizes Material-UI with Emotion for styling, axios for HTTP requests, react-redux, redux-persist, and reduxjs/toolkit to manage the logged in user's state, and react-router-dom to handle the app's web routing.
 
 ## How to run this project
 1. Open your terminal and type: git clone https://github.com/christiandeandemesa/MERN-blog.git
@@ -27,6 +27,7 @@ The frontend utilizes Material-UI with Emotion for styling, axios for HTTP reque
 - Browser support for Edge/Internet Explorer.
 
 ## Upcoming Features
+- Apply Google Fonts.
 - Cross browser support for Chrome, Firefox, Opera, and Safari.
 - User will have the ability to type a user in a search field to filter all the posts.
 - User will have another list to filter all the posts by oldest or newest date.
