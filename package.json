@@ -11,6 +11,10 @@
 		"format-frontend": "prettier --write \"client/src/**/*.{js,jsx}\"",
 		"format-backend": "prettier --write \"server/**/*.{js,jsx}\""
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/christiandeandemesa/MERN-blog"
+	},
 	"keywords": [
 		"MERN",
 		"music",
