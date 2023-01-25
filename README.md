@@ -19,7 +19,7 @@ The frontend utilizes Material-UI with Emotion for styling, axios for HTTP reque
 2. Cd into MERN-blog, then type git checkout 4609cd63cf3 to get commit before deployment.
 2. To download the backend dependencies, stay in the root folder (MERN-blog) and type: npm install
 3. To download the frontend dependencies, cd into the client folder and type: npm install
-4. Cd .. back to the mern-blog folder, and run this project by typing: npm run dev
+4. Cd .. back to the MERN-blog folder, and run this project by typing: npm run dev
 
 ## Features
 - User can register and log in to their account.
