@@ -1,20 +1,23 @@
 # MERN Blog
 A public music-themed blog where users can write, view, filter, edit, and delete posts. 
 
-![mern-blog](https://user-images.githubusercontent.com/85912934/197315791-e4cc3d8e-b60d-4f5d-a066-b55983da0196.png)
+![mern-blog](https://user-images.githubusercontent.com/85912934/214684972-22495c29-a9b3-4698-812e-a59803322cce.png)
 
-The backend was built with JavaScript, Node.js, Express, MongoDB, Prettier to make the code easier to read, Eslint (Airbnb and 
-Prettier configurations) to find problems in the code, nodemon to restart the app when a server change is made, concurrently to run both the client and server simultaneously, 
+The backend was built with javascript, node.js, express, mongodb atlas,   
 bcryptjs to encrypt and decrypt the users' password, colors to make certain console logs pop out, 
-cors tells the browser that the app at its origin (e.g. localhost:5000) has access to resources at another origin (e.g. localhost:3000), 
+cors tells the browser that the app at its origin has access to resources at another origin, 
 dotenv to keep certain information secret, express-async-handler to handle async express route exceptions, 
-jsonwebtoken to give each user a unique token, and multer to upload files.
+jsonwebtoken to give each user a unique token, multer to upload files, and prop-types to declare the type of props for eslint.
+
+The developer version's backend, which can be cloned in the below section, also features prettier to make the code easier to read, eslint (Airbnb and 
+Prettier configurations) to find problems in the code, nodemon to restart the app when a server change is made, and concurrently to run both the client and server simultaneously.
 
 The frontend utilizes Material-UI with Emotion for styling, axios for HTTP requests, react-redux, redux-persist, and reduxjs/toolkit to manage the logged in user's state, and react-router-dom to handle the app's web routing.
 
 ## How to run this project
 1. Open your terminal and type: git clone https://github.com/christiandeandemesa/MERN-blog.git
-2. To download the backend dependencies, cd into the mern-blog folder and type: npm install
+2. Cd into MERN-blog, then type git checkout 4609cd63cf3 to get commit before deployment.
+2. To download the backend dependencies, stay in the root folder (MERN-blog) and type: npm install
 3. To download the frontend dependencies, cd into the client folder and type: npm install
 4. Cd .. back to the mern-blog folder, and run this project by typing: npm run dev
 
@@ -27,36 +30,22 @@ The frontend utilizes Material-UI with Emotion for styling, axios for HTTP reque
 - Browser support for Edge/Internet Explorer.
 
 ## Upcoming Features
-- Apply Google Fonts.
+- Apply Google Fonts styling.
 - Cross browser support for Chrome, Firefox, Opera, and Safari.
-- User will have the ability to type a user in a search field to filter all the posts.
-- User will have another list to filter all the posts by oldest or newest date.
+- User will have the ability to type a category or user in a search field to filter all the posts.
+- User will have a select box to filter all the posts by oldest or newest date.
 - User will be able to like or unlike posts.
 - Logged in user will be able to view the like count of any of their posts.
 - Logged in user will be able to leave comments on posts.
 - Logged in user will be able to view the comments of any of their posts.
 
-## Demos
-### Register a User
-https://user-images.githubusercontent.com/85912934/197315840-751a3c57-84d9-4783-b15b-69e99652a9ec.mp4
+## Bugs
+- Attempting to upload your own image for your profile or post will cause an interal server error on the deployed website because multer is saving the uploaded images in a server/assets folder.
 
-### Login a User
-https://user-images.githubusercontent.com/85912934/197315846-5c359932-4015-4dac-9ee1-26a8c4610275.mp4
+### Multer Bug
+https://user-images.githubusercontent.com/85912934/214688457-138a7867-083a-4504-900f-fad7293a2397.mp4
 
-### Write a Post
-https://user-images.githubusercontent.com/85912934/197315858-9c451e80-f4ea-4635-8658-541d6c9ecc14.mp4
-
-### Edit and Delete a Post
-https://user-images.githubusercontent.com/85912934/197315878-99cfef79-b633-4824-918b-31311f7af1bb.mp4
-
-### Blocking access to certain Users
-https://user-images.githubusercontent.com/85912934/197315911-77ef53c2-410b-4937-a47d-a1acfb6657e6.mp4
-
-### Edit and Delete a User
-https://user-images.githubusercontent.com/85912934/197315935-ea4fdc05-c854-4d6a-87c7-b75176adc871.mp4
-
-### Filter Posts
-https://user-images.githubusercontent.com/85912934/197315939-de6480e9-72c6-46da-9f02-8c9bbb5d6ecc.mp4
+## [MERN Blog Demo](https://mern-chat-frontend.onrender.com/)
 
 ## Author
 - Christian Demesa: https://github.com/christiandeandemesa
