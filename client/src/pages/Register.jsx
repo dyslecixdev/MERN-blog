@@ -36,7 +36,10 @@ function Register() {
 		formData.append('profilePic', profilePic);
 		formData.append('isAdmin', false);
 		try {
-			const res = await axios.post('http://localhost:5000/users/register', formData); // Sends the email and password to the register user URL
+			const res = await axios.post(
+				'https://mern-blog-backend-g1kq.onrender.com/users/register',
+				formData
+			); // Sends the email and password to the register user URL
 			dispatch(loginSuccess(res.data)); // Sends the data as an action payload to the reducer function
 			navigate('/');
 		} catch (err) {

@@ -20,8 +20,8 @@ function Home() {
 			try {
 				const res = await axios.get(
 					catQuery
-						? `http://localhost:5000/posts?category=${catQuery}`
-						: 'http://localhost:5000/posts'
+						? `https://mern-blog-backend-g1kq.onrender.com/posts?category=${catQuery}`
+						: 'https://mern-blog-backend-g1kq.onrender.com/posts'
 				); // Uses either the API URL depending on if a catQuery exists
 				setPosts(res.data);
 			} catch (err) {

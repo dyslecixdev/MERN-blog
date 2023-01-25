@@ -128,7 +128,7 @@ function Navbar() {
 								alt={user.username}
 								src={
 									user.profilePic !== ''
-										? `http://localhost:5000/static/${user.profilePic}`
+										? `https://mern-blog-backend-g1kq.onrender.com/static/${user.profilePic}`
 										: DefaultProfile
 								}
 								color='inherit'

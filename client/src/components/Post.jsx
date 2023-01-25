@@ -52,7 +52,7 @@ function Post({postData}) {
 							alt={postData.username}
 							src={
 								postData.userAvatar !== ''
-									? `http://localhost:5000/static/${postData.userAvatar}`
+									? `https://mern-blog-backend-g1kq.onrender.com/static/${postData.userAvatar}`
 									: DefaultProfile
 							}
 							color='inherit'
@@ -68,7 +68,7 @@ function Post({postData}) {
 				component='img'
 				image={
 					postData.photo !== ''
-						? `http://localhost:5000/static/${postData.photo}`
+						? `https://mern-blog-backend-g1kq.onrender.com/static/${postData.photo}`
 						: DefaultPhoto
 				}
 				alt={postData.title}

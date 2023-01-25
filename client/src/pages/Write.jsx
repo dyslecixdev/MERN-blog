@@ -44,7 +44,7 @@ function Write() {
 		formData.append('user', user.username);
 		formData.append('userAvatar', user.profilePic);
 		try {
-			await axios.post('http://localhost:5000/posts', formData, {
+			await axios.post('https://mern-blog-backend-g1kq.onrender.com/posts', formData, {
 				headers: {
 					Authorization: 'Bearer ' + user.token
 				}

@@ -72,7 +72,9 @@ function SinglePost() {
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const res = await axios.get(`http://localhost:5000/posts/${id}`);
+				const res = await axios.get(
+					`https://mern-blog-backend-g1kq.onrender.com/posts/${id}`
+				);
 				setPost(res.data);
 			} catch (err) {
 				console.log(err);
@@ -106,7 +108,7 @@ function SinglePost() {
 		formData.append('user', post.user);
 		formData.append('userAvatar', post.userAvatar);
 		try {
-			await axios.put(`http://localhost:5000/posts/${id}`, formData, {
+			await axios.put(`https://mern-blog-backend-g1kq.onrender.com/posts/${id}`, formData, {
 				headers: {
 					Authorization: 'Bearer ' + user.token
 				}
@@ -121,7 +123,7 @@ function SinglePost() {
 	const handleDelete = async e => {
 		e.preventDefault();
 		try {
-			await axios.delete(`http://localhost:5000/posts/${id}`, {
+			await axios.delete(`https://mern-blog-backend-g1kq.onrender.com/posts/${id}`, {
 				headers: {
 					Authorization: 'Bearer ' + user.token
 				}
@@ -316,7 +318,7 @@ function SinglePost() {
 									alt={post.username}
 									src={
 										post.userAvatar !== ''
-											? `http://localhost:5000/static/${post.userAvatar}`
+											? `https://mern-blog-backend-g1kq.onrender.com/static/${post.userAvatar}`
 											: DefaultProfile
 									}
 									sx={{width: 100, height: 100}}
@@ -331,7 +333,7 @@ function SinglePost() {
 						component='img'
 						image={
 							post.photo !== ''
-								? `http://localhost:5000/static/${post.photo}`
+								? `https://mern-blog-backend-g1kq.onrender.com/static/${post.photo}`
 								: DefaultPhoto
 						}
 						alt={post.title}

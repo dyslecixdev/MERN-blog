@@ -57,11 +57,15 @@ function Profile() {
 		formData.append('profilePic', profilePic);
 		formData.append('isAdmin', user.isAdmin); // Sets isAdmin as its previous value from state
 		try {
-			const res = await axios.put(`http://localhost:5000/users/${user.id}`, formData, {
-				headers: {
-					Authorization: 'Bearer ' + user.token
+			const res = await axios.put(
+				`https://mern-blog-backend-g1kq.onrender.com/users/${user.id}`,
+				formData,
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token
+					}
 				}
-			});
+			);
 			dispatch(updateUserSuccess(res.data));
 			handleReset();
 		} catch (err) {
@@ -75,7 +79,7 @@ function Profile() {
 		e.preventDefault();
 		dispatch(deleteUserStart());
 		try {
-			await axios.delete(`http://localhost:5000/users/${user.id}`, {
+			await axios.delete(`https://mern-blog-backend-g1kq.onrender.com/users/${user.id}`, {
 				headers: {
 					Authorization: 'Bearer ' + user.token
 				}
@@ -283,7 +287,7 @@ function Profile() {
 						alt={user.username}
 						src={
 							user.profilePic !== ''
-								? `http://localhost:5000/static/${user.profilePic}`
+								? `https://mern-blog-backend-g1kq.onrender.com/static/${user.profilePic}`
 								: DefaultProfile
 						}
 						sx={{width: 100, height: 100}}
