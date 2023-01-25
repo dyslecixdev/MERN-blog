@@ -1,15 +1,10 @@
 {
-	"name": "mern-blog",
+	"name": "server",
 	"version": "1.0.0",
 	"description": "MERN music blog",
 	"main": "index.js",
 	"scripts": {
-		"start": "node server/index.js",
-		"server": "nodemon server/index.js",
-		"client": "npm start --prefix client",
-		"dev": "concurrently \"npm run server\" \"npm run client\"",
-		"format-frontend": "prettier --write \"client/src/**/*.{js,jsx}\"",
-		"format-backend": "prettier --write \"server/**/*.{js,jsx}\""
+		"start": "node index.js"
 	},
 	"repository": {
 		"type": "git",

@@ -60,7 +60,7 @@ function Post({postData}) {
 					</Tooltip>
 				}
 				title={postData.title}
-				subheader={`${monthNames[month]} ${day} ${year}`}
+				subheader={`${monthNames[month]} ${day}, ${year}`}
 			/>
 
 			{/* Image */}
