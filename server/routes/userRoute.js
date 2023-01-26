@@ -40,20 +40,18 @@ const upload = multer({
 	}
 });
 
-const profilePicUpload = upload.single('profilePic');
+const profilePicUpload = (req, res, next) => {
+	const singleProfilePicUpload = upload.single('profilePic');
 
-router.post('/register', function (req, res) {
-	profilePicUpload(req, res, function (err) {
-		if (err instanceof multer.MulterError) new Error(`Multer Error: ${err}`);
-		else if (err) new Error(`Not a Multer Error: ${err}`);
-		else registerUser;
+	singleProfilePicUpload(req, res, function (err) {
+		if (err instanceof multer.MulterError) res.status(500).json(`Multer Error: ${err}`);
+		else if (err) res.status(500).json(`Not a Multer Error: ${err}`);
+		next();
 	});
-}); // upload.single() states that this route will only upload one image
+};
 
-router.post('/register', function testMulter() {
-	upload.single('profilePic');
-});
-
+// router.post('/register', upload.single('profilePic'), registerUser); // upload.single() states that this route will only upload one image
+router.post('/register', profilePicUpload, registerUser);
 router.post('/login', loginUser);
 router.get('/:id', protect, getOneUser);
 router.get('/', protect, getAllUsers);
