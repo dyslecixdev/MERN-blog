@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
 		cb(null, `${Date.now()}-${file.originalname.toLowerCase().split(' ').join('-')}`); // Renames each image filename using the current Date to make it unique
 	}
 });
-console.log(storage);
 
 const upload = multer({
 	storage,
@@ -40,9 +39,21 @@ const upload = multer({
 		}
 	}
 });
-console.log(upload);
 
-router.post('/register', upload.single('profilePic'), registerUser); // upload.single() states that this route will only upload one image
+const profilePicUpload = upload.single('profilePic');
+
+router.post('/register', function (req, res) {
+	profilePicUpload(req, res, function (err) {
+		if (err instanceof multer.MulterError) new Error(`Multer Error: ${err}`);
+		else if (err) new Error(`Not a Multer Error: ${err}`);
+		else registerUser;
+	});
+}); // upload.single() states that this route will only upload one image
+
+router.post('/register', function testMulter() {
+	upload.single('profilePic');
+});
+
 router.post('/login', loginUser);
 router.get('/:id', protect, getOneUser);
 router.get('/', protect, getAllUsers);
