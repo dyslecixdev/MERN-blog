@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 const express = require('express');
 
 const router = express.Router();
@@ -14,7 +15,8 @@ const protect = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, '/Users/chris/Code/mern-blog/server/assets'); // Path of the uploaded image's folder
+		// path.join finds a path from the __dirname to assets with .. signifying any links folder pathing in between.
+		cb(null, path.join(__dirname, '..', 'assets')); // Path of the uploaded image's folder
 	},
 	filename: (req, file, cb) => {
 		cb(null, `${Date.now()}-${file.originalname.toLowerCase().split(' ').join('-')}`); // Renames each image filename using the current Date to make it unique

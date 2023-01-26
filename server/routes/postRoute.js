@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 const express = require('express');
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const protect = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, './server/assets');
+		cb(null, path.join(__dirname, '..', 'assets'));
 	},
 	filename: (req, file, cb) => {
 		cb(null, `${Date.now()}-${file.originalname.toLowerCase().split(' ').join('-')}`);
