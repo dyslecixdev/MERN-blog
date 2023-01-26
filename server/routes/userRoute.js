@@ -2,6 +2,9 @@ const multer = require('multer');
 const path = require('path');
 const express = require('express');
 
+console.log(__dirname);
+console.log(path.join(__dirname, '..', 'assets'));
+
 const router = express.Router();
 const {
 	registerUser,
