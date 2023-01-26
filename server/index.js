@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended: false}));
 // {credentials: true} allows all requests from the origins.
 app.use(cors({origin: true}));
 
-app.use('/static', express.static('./server/assets')); // Replaces the route to the folder holding the images (routes files) with '/static'
+app.use('/static', express.static(__dirname + '/assets')); // Replaces the route to the folder holding the images (routes files) with '/static'
 
 app.use('/users', require('./routes/userRoute'));
 app.use('/posts', require('./routes/postRoute'));
