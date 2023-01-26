@@ -13,6 +13,8 @@ const generateToken = userId => {
 const registerUser = asyncHandler(async (req, res) => {
 	const {username, email, password, confirmPassword, isAdmin} = req.body;
 
+	console.log('registerUser executed');
+
 	const userExists = await User.findOne({email});
 	if (userExists) {
 		res.status(409).json('User already exists');

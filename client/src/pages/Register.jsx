@@ -61,6 +61,7 @@ function Register() {
 				elevation={3}
 				component='form'
 				onSubmit={handleSubmit}
+				encType='multipart/form-data'
 				sx={{
 					width: {
 						xs: '100%',

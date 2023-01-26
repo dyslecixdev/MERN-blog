@@ -2,9 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const express = require('express');
 
-console.log(__dirname);
-console.log(path.join(__dirname, '..', 'assets'));
-
 const router = express.Router();
 const {
 	registerUser,
@@ -25,6 +22,7 @@ const storage = multer.diskStorage({
 		cb(null, `${Date.now()}-${file.originalname.toLowerCase().split(' ').join('-')}`); // Renames each image filename using the current Date to make it unique
 	}
 });
+console.log(storage);
 
 const upload = multer({
 	storage,
@@ -42,6 +40,7 @@ const upload = multer({
 		}
 	}
 });
+console.log(upload);
 
 router.post('/register', upload.single('profilePic'), registerUser); // upload.single() states that this route will only upload one image
 router.post('/login', loginUser);
