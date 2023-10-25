@@ -81,7 +81,5 @@ JWT_SECRET = Any Text Here
 ### Multer Bug
 https://user-images.githubusercontent.com/85912934/214688457-138a7867-083a-4504-900f-fad7293a2397.mp4
 
-## [MERN Blog Demo](https://mern-blog-frontend-ejna.onrender.com/)
-
 ## Author
 - Christian Demesa: https://github.com/christiandeandemesa
